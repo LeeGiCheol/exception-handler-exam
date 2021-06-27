@@ -20,4 +20,11 @@ public class ExceptionResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public ExceptionResponse() {}
+
+    public ExceptionResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 }
