@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = { "com.example.exception_handler_exam.controller" })
 public class ExceptionAdviceHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> methodValidException(MethodArgumentNotValidException e, HttpServletRequest request){
+    public ResponseEntity<ExceptionResponse> exceptionHandler(MethodArgumentNotValidException e){
         ExceptionResponse exceptionResponse = makeErrorResponse(e.getBindingResult());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
@@ -23,12 +23,10 @@ public class ExceptionAdviceHandler {
     private ExceptionResponse makeErrorResponse(BindingResult bindingResult){
         String code = "";
         String message = "";
-        String detail = "";
+        String defaultMessage = "";
 
         if(bindingResult.hasErrors()){
-            detail = bindingResult.getFieldError().getDefaultMessage();
-
-            System.out.println(detail);
+            defaultMessage = bindingResult.getFieldError().getDefaultMessage();
 
             String bindResultCode = bindingResult.getFieldError().getCode();
 
@@ -36,8 +34,8 @@ public class ExceptionAdviceHandler {
                 case "NotNull":
                     code = ExceptionCode.NOT_NULL.getCode();
 
-                    if (detail != null) {
-                        message = detail;
+                    if (defaultMessage != null) {
+                        message = defaultMessage;
                     } else {
                         message = ExceptionCode.NOT_NULL.getMessage();
                     }
